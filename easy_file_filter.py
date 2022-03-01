@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import os
+import re
 
 
 sg.theme('DarkAmber')  # Add a touch of color
@@ -21,7 +22,6 @@ def get_file_names(path):
     with os.scandir(path) as entries:
         for entry in entries:
             file_names.append(entry.name)
-    print("FILE NAMES: " + str(file_names))
     return file_names
 
 
@@ -37,8 +37,15 @@ while True:
 
     if event == "Filter":
         files = get_file_names(values['-FOLDER-'])
+        search_regex = r"{0}".format(values['-NAME-'])
+
+        matches_files = []
         for file in files:
-            print(file)
+            match = re.search(search_regex, file)
+
+            if match:
+                print('[+] Matched: ' + file)
+                matches_files.append(file)
 
 window.close()
 
