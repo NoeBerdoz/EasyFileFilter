@@ -5,13 +5,25 @@ import os
 sg.theme('DarkAmber')  # Add a touch of color
 
 # Construction of the window.
-layout = [  [sg.Text('Folder location')],
+layout = [  [sg.Text('Folder location:')],
             [sg.In(enable_events=True, key="-FOLDER-"), sg.FolderBrowse()],  # Take as input the chosen folder absolute path
             [sg.Listbox(values=[], size=(30, 6), key='-FILES-')],
+            [sg.Text('Name to filter:'), sg.InputText(key="-NAME-"), sg.Button('Filter')],
             [sg.Button('Ok'), sg.Button('Cancel')] ]
 
 # Create the Window
 window = sg.Window('Easy File Filter', layout)
+
+
+# Get all files in directory
+def get_file_names(path):
+    file_names = []
+    with os.scandir(path) as entries:
+        for entry in entries:
+            file_names.append(entry.name)
+    print("FILE NAMES: " + str(file_names))
+    return file_names
+
 
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
@@ -21,14 +33,12 @@ while True:
 
     # Update list to show all files in the directory
     if event == "-FOLDER-":
+        window['-FILES-'].update(get_file_names(values['-FOLDER-']))
 
-        # Get all files in directory
-        file_names = []
-        with os.scandir(values['-FOLDER-']) as entries:
-            for entry in entries:
-                file_names.append(entry.name)
-
-        window['-FILES-'].update(file_names)
+    if event == "Filter":
+        files = get_file_names(values['-FOLDER-'])
+        for file in files:
+            print(file)
 
 window.close()
 
