@@ -10,6 +10,8 @@ layout = [  [sg.Text('Folder location:')],
             [sg.In(enable_events=True, key="-FOLDER-"), sg.FolderBrowse()],  # Take as input the chosen folder absolute path
             [sg.Listbox(values=[], size=(30, 6), key='-FILES-')],
             [sg.Text('Name to filter:'), sg.InputText(key="-NAME-"), sg.Button('Filter')],
+            [sg.Text('Files filtered:')],
+            [sg.Listbox(values=[], size=(30, 6), key="-MATCHES-")],
             [sg.Button('Ok'), sg.Button('Cancel')] ]
 
 # Create the Window
@@ -44,8 +46,9 @@ while True:
             match = re.search(search_regex, file)
 
             if match:
-                print('[+] Matched: ' + file)
                 matches_files.append(file)
+
+            window['-MATCHES-'].update(matches_files)  # Show matches files from filter
 
 window.close()
 
