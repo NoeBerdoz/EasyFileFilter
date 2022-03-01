@@ -9,8 +9,10 @@ sg.theme('DarkAmber')  # Add a touch of color
 # Construction of the window.
 layout = [  [sg.Text('Folder location:')],
             [sg.In(enable_events=True, key="-FOLDER-"), sg.FolderBrowse()],  # Take as input the chosen folder absolute path
+            [sg.Text('List of files: ')],
             [sg.Listbox(values=[], size=(30, 6), key='-FILES-')],
-            [sg.Text('Name to filter:'), sg.InputText(key="-NAME-"), sg.Button('Filter')],
+            [sg.Text('Name to filter:')],
+            [sg.InputText(key="-NAME-"), sg.Button('Filter')],
             [sg.Text(key="-NEW_FOLDER-")],
             [sg.Listbox(values=[], size=(30, 6), key="-MATCHES-")],
             [sg.Button('Ok'), sg.Button('Cancel')] ]
@@ -22,10 +24,13 @@ window = sg.Window('Easy File Filter', layout)
 # Get all files in directory
 def get_file_names(path):
     file_names = []
-    with os.scandir(path) as entries:
-        for entry in entries:
-            file_names.append(entry.name)
-    return file_names
+    try:
+        with os.scandir(path) as entries:
+            for entry in entries:
+                file_names.append(entry.name)
+        return file_names
+    except FileNotFoundError:
+        return ['No files found in ' + path]
 
 
 # Event Loop to process "events" and get the "values" of the inputs
