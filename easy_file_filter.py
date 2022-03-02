@@ -7,16 +7,32 @@ import shutil
 sg.theme('DarkAmber')  # Add a touch of color
 
 # Construction of the window.
-# TODO Make this look good and user friendly
-layout = [  [sg.Text('Folder location:')],
-            [sg.In(enable_events=True, key="-FOLDER-"), sg.FolderBrowse()],  # Take as input the chosen folder absolute path
-            [sg.Text('List of files: ')],
-            [sg.Listbox(values=[], size=(30, 6), key='-FILES-')],
-            [sg.Text('Name to filter:')],
-            [sg.InputText(key="-NAME-"), sg.Button('Filter')],
-            [sg.Text(key="-NEW_FOLDER-")],
-            [sg.Listbox(values=[], size=(30, 6), key="-MATCHES-")],
-            [sg.Button('Ok'), sg.Button('Cancel')] ]
+row1 = sg.Frame(' First step ',
+                [
+                      [sg.Text(), sg.Column([
+                          [sg.Text('Folder location:')],
+                          [sg.In(enable_events=True, key="-FOLDER-"), sg.FolderBrowse()],  # Take as input the chosen folder absolute path
+                          [sg.Text('List of files: ')],
+                          [sg.Listbox(values=[], size=(55, 10), key='-FILES-')],
+                                            ], size=(450,300), pad=(0,0))]
+                ]
+               )
+
+row2 = sg.Frame(' Second step ',
+                  [
+                      [sg.Text(), sg.Column([
+                          [sg.Text('Name to filter:')],
+                          [sg.InputText(key="-NAME-"), sg.Button('Filter')],
+                          [sg.Text(key="-NEW_FOLDER-")],
+                          [sg.Listbox(values=[], size=(55, 10), key="-MATCHES-")],
+                  ], size=(450,300), pad=(0,0))]]
+                )
+
+layout = [
+            [row1],
+            [row2],
+            [sg.Button('Quit')]
+            ]
 
 # Create the Window
 window = sg.Window('Easy File Filter', layout)
@@ -58,7 +74,7 @@ def move_files(source, destination, files):
             for file in files:
                 shutil.move(source + '/' + file, destination)
 
-            return "[+] " + str(len(files)) + " Files moved in " + destination
+            return "[+] " + str(len(files)) + " Files moved in \n" + destination
 
         if not source:
             return "Please give a folder location"
@@ -73,7 +89,7 @@ def move_files(source, destination, files):
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
     event, values = window.read()
-    if event == sg.WIN_CLOSED or event == 'Cancel':  # if user closes window or clicks cancel
+    if event == sg.WIN_CLOSED or event == 'Quit':  # if user closes window or clicks quit
         break
 
     # Update list to show all files in the directory
