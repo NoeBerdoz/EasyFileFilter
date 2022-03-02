@@ -35,7 +35,7 @@ layout = [
 ]
 
 # Create the Window
-window = sg.Window('Easy File Filter', layout)
+window = sg.Window('Easy File Filter', layout, icon=os.getcwd() + "/EasyFileFilterIcon.ico")
 
 
 # Get all files in directory
