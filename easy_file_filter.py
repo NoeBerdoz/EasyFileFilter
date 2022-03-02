@@ -3,36 +3,36 @@ import os
 import re
 import shutil
 
-
 sg.theme('DarkAmber')  # Add a touch of color
 
 # Construction of the window.
 row1 = sg.Frame(' First step ',
                 [
-                      [sg.Text(), sg.Column([
-                          [sg.Text('Folder location:')],
-                          [sg.In(enable_events=True, key="-FOLDER-"), sg.FolderBrowse()],  # Take as input the chosen folder absolute path
-                          [sg.Text('List of files: ')],
-                          [sg.Listbox(values=[], size=(55, 10), key='-FILES-')],
-                                            ], size=(450,300), pad=(0,0))]
+                    [sg.Text(), sg.Column([
+                        [sg.Text('Folder location:')],
+                        # Take as input the chosen folder absolute path
+                        [sg.In(enable_events=True, key="-FOLDER-"), sg.FolderBrowse()],
+                        [sg.Text('List of files: ')],
+                        [sg.Listbox(values=[], size=(55, 10), key='-FILES-')],
+                    ], size=(450, 300), pad=(0, 0))]
                 ]
-               )
+                )
 
 row2 = sg.Frame(' Second step ',
-                  [
-                      [sg.Text(), sg.Column([
-                          [sg.Text('Name to filter:')],
-                          [sg.InputText(key="-NAME-"), sg.Button('Filter')],
-                          [sg.Text(key="-NEW_FOLDER-")],
-                          [sg.Listbox(values=[], size=(55, 10), key="-MATCHES-")],
-                  ], size=(450,300), pad=(0,0))]]
+                [
+                    [sg.Text(), sg.Column([
+                        [sg.Text('Name to filter:')],
+                        [sg.InputText(key="-NAME-"), sg.Button('Filter')],
+                        [sg.Text(key="-NEW_FOLDER-")],
+                        [sg.Listbox(values=[], size=(55, 10), key="-MATCHES-")],
+                    ], size=(450, 300), pad=(0, 0))]]
                 )
 
 layout = [
-            [row1],
-            [row2],
-            [sg.Button('Quit')]
-            ]
+    [row1],
+    [row2],
+    [sg.Button('Quit')]
+]
 
 # Create the Window
 window = sg.Window('Easy File Filter', layout)
@@ -109,6 +109,4 @@ while True:
         window['-MATCHES-'].update(matches)  # Show matches files from filter
         window['-NEW_FOLDER-'].update(move_files_output)  # Show the return of move_files
 
-
 window.close()
-
