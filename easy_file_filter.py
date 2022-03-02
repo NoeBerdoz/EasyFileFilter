@@ -7,6 +7,7 @@ import shutil
 sg.theme('DarkAmber')  # Add a touch of color
 
 # Construction of the window.
+# TODO Make this look good and user friendly
 layout = [  [sg.Text('Folder location:')],
             [sg.In(enable_events=True, key="-FOLDER-"), sg.FolderBrowse()],  # Take as input the chosen folder absolute path
             [sg.Text('List of files: ')],
@@ -33,6 +34,19 @@ def get_file_names(path):
         return ['No files found in ' + path]
 
 
+# Check if a file match with a name
+def get_matches(files, name):
+    search_regex = r"{0}".format(name)
+    matches_files = []
+    for file in files:
+        match = re.search(search_regex, file)
+
+        if match:
+            matches_files.append(file)
+
+    return matches_files
+
+
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
     event, values = window.read()
@@ -43,26 +57,22 @@ while True:
     if event == "-FOLDER-":
         window['-FILES-'].update(get_file_names(values['-FOLDER-']))
 
+    # TODO Manage dumb filtering & already present folder
+    #   [-] Filtering on nothing takes absolute path '/'
+    #   [-] Filtering a file name with no matches create a directory
     if event == "Filter":
         files = get_file_names(values['-FOLDER-'])
-        search_regex = r"{0}".format(values['-NAME-'])
-
-        matches_files = []
-        for file in files:
-            match = re.search(search_regex, file)
-
-            if match:
-                matches_files.append(file)
+        matches = get_matches(files, values['-NAME-'])
 
         filtered_files_path = values['-FOLDER-'] + '/' + values['-NAME-']
 
         os.mkdir(filtered_files_path)
 
-        for matche_file in matches_files:
-            shutil.move(values['-FOLDER-'] + '/' + matche_file, filtered_files_path)
+        for match in matches:
+            shutil.move(values['-FOLDER-'] + '/' + match, filtered_files_path)
             print('Moved file to /' + values['-NAME-'])
 
-        window['-MATCHES-'].update(matches_files)  # Show matches files from filter
+        window['-MATCHES-'].update(matches)  # Show matches files from filter
         window['-NEW_FOLDER-'].update('[!] Moved these files to /' + values['-NAME-'])
 
 window.close()
