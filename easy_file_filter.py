@@ -47,6 +47,29 @@ def get_matches(files, name):
     return matches_files
 
 
+# Create folder and move files to it
+def move_files(source, destination, files):
+    try:
+        if not files:
+            return "No files with this name where found"
+
+        if source:  # Test that a real source folder is given
+            os.mkdir(destination)
+            for file in files:
+                shutil.move(source + '/' + file, destination)
+
+            return "[+] " + str(len(files)) + " Files moved in " + destination
+
+        if not source:
+            return "Please give a folder location"
+
+    except FileExistsError:
+        return "A folder with this name already exist"
+
+    except PermissionError:
+        return "Access denied, the program can't access this folder: " + source
+
+
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
     event, values = window.read()
@@ -57,23 +80,19 @@ while True:
     if event == "-FOLDER-":
         window['-FILES-'].update(get_file_names(values['-FOLDER-']))
 
-    # TODO Manage dumb filtering & already present folder
-    #   [-] Filtering on nothing takes absolute path '/'
-    #   [-] Filtering a file name with no matches create a directory
     if event == "Filter":
         files = get_file_names(values['-FOLDER-'])
         matches = get_matches(files, values['-NAME-'])
 
         filtered_files_path = values['-FOLDER-'] + '/' + values['-NAME-']
 
-        os.mkdir(filtered_files_path)
-
-        for match in matches:
-            shutil.move(values['-FOLDER-'] + '/' + match, filtered_files_path)
-            print('Moved file to /' + values['-NAME-'])
+        # Move files and store output
+        # NOTE I think that this is not a clean way to do it, should improve concerned code later
+        move_files_output = move_files(values['-FOLDER-'], filtered_files_path, matches)
 
         window['-MATCHES-'].update(matches)  # Show matches files from filter
-        window['-NEW_FOLDER-'].update('[!] Moved these files to /' + values['-NAME-'])
+        window['-NEW_FOLDER-'].update(move_files_output)  # Show the return of move_files
+
 
 window.close()
 
