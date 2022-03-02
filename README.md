@@ -10,6 +10,7 @@ administration of business invoices for a big company.*
 
 This will create a new directory with the filtered files inside that matches the given name.
 
+![](EasyFileFilterDemo.gif)
 
 ## Sources
 [PySimpleGUI Documentation](https://pysimplegui.readthedocs.io/en/latest/)
